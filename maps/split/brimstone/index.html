@@ -470,6 +470,24 @@
     }
 
     // Render hotspots dynamically
+    function normalizeHotspotUnit(value) {
+      if (value === null || value === undefined) return null;
+      if (typeof value === 'number') return `${value}%`;
+
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed === '') return null;
+
+        if (/^-?\d+(\.\d+)?$/.test(trimmed)) {
+          return `${trimmed}%`;
+        }
+
+        return trimmed;
+      }
+
+      return null;
+    }
+
     function renderHotspots() {
       if (!hotspotData) return;
       const container = document.getElementById('hotspotContainer');
@@ -477,16 +495,16 @@
         const div = document.createElement('div');
         div.className = 'map-hotspot';
         div.dataset.location = hotspot.id;
-        div.style.top = hotspot.top;
-        div.style.width = hotspot.width;
-        div.style.height = hotspot.height;
+        div.style.top = normalizeHotspotUnit(hotspot.top);
+        div.style.width = normalizeHotspotUnit(hotspot.width);
+        div.style.height = normalizeHotspotUnit(hotspot.height);
         div.style.borderRadius = '4px';
         
         // Set left or right positioning
         if (hotspot.left) {
-          div.style.left = hotspot.left;
+          div.style.left = normalizeHotspotUnit(hotspot.left);
         } else if (hotspot.right) {
-          div.style.right = hotspot.right;
+          div.style.right = normalizeHotspotUnit(hotspot.right);
         }
         
         container.appendChild(div);
