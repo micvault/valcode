@@ -1,0 +1,36 @@
+{
+  "map": "Split",
+  "agent": "Brimstone",
+  "areas": {
+    "b-opendefault": {
+      "name": "B Open Default",
+      "connections": ["b-opendefault", "b-lobby"],
+      "image": "/images/tutorials/split/brimstone/spike-plant-b-open.jpg"
+    }
+  },
+  "lineups": [
+    {
+      "spikePlant": "b-opendefault",
+      "position": "b-lobby",
+      "description": "description.",
+      "notes": "notes.",
+      "heatValue": 0.9,
+      "tutorial": {
+        "title": "B Open Default Setup",
+        "images": [
+          "/images/tutorials/split/brimstone/b-open-default-from-b-lobby-1.jpg",
+          "/images/tutorials/split/brimstone/b-open-default-from-b-lobby-2.jpg",
+          "/images/tutorials/split/brimstone/b-open-default-from-b-lobby-3.jpg",
+          "/images/tutorials/split/brimstone/b-open-default-from-b-lobby-4.jpg"
+        ]
+      }
+    },
+    {
+      "spikePlant": "a-main",
+      "position": "a-ramp",
+      "description": "Hold A Ramp from behind the boxes. Smoke off Attackers pushing from Main entrance. Use stim packs to support teammates.",
+      "notes": "Good rotation angle to A Tower if site is taken.",
+      "heatValue": 0.9
+    }
+  ]
+}

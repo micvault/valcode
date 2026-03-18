@@ -1,0 +1,24 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#44318d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a1b3d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect x="100" y="100" width="1000" height="600" fill="none" stroke="#d83f87" stroke-width="2"/>
+  <text x="600" y="200" font-size="40" font-weight="bold" fill="#dff876" text-anchor="middle" font-family="Arial">
+    Spike Plant Location
+  </text>
+  <text x="600" y="260" font-size="32" fill="#d83f87" text-anchor="middle" font-family="Arial">
+    B Open Default
+  </text>
+  <circle cx="600" cy="420" r="80" fill="none" stroke="#dff876" stroke-width="3" stroke-dasharray="8,5"/>
+  <circle cx="600" cy="420" r="70" fill="none" stroke="#d83f87" stroke-width="2" opacity="0.5"/>
+  <text x="600" y="440" font-size="28" fill="#dff876" text-anchor="middle" dominant-baseline="middle" font-family="Arial">
+    🎯
+  </text>
+  <text x="600" y="650" font-size="18" fill="#d8d0e4" text-anchor="middle" font-family="Arial">
+    Select a defensive position to begin
+  </text>
+</svg>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VAL Code</title>
+  <style>
+    :root {
+      --bg-deep: #2a1b3d;
+      --bg-mid: #44318d;
+      --accent: #d83f87;
+      --warm: #e98074;
+      --cool: #a4b3b6;
+      --text: #f7f4fb;
+      --muted: #d8d0e4;
+      --panel: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        linear-gradient(130deg, rgba(42, 27, 61, 0.98), rgba(68, 49, 141, 0.9)),
+        radial-gradient(circle at 75% 12%, rgba(216, 63, 135, 0.18), transparent 42%),
+        radial-gradient(circle at 15% 80%, rgba(233, 128, 116, 0.15), transparent 38%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: rgba(42, 27, 61, 0.5);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      height: 56px;
+      display: flex;
+      align-items: center;
+    }
+
+    main {
+      padding: 3rem 0 3rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      padding: 0.35rem 0;
+    }
+
+    .intro h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.05;
+    }
+
+    .intro p {
+      color: var(--muted);
+      max-width: 45ch;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .photo-card {
+      position: relative;
+      min-height: 390px;
+      border: none;
+      border-radius: 0;
+      overflow: hidden;
+      text-decoration: none;
+      color: #e8efea;
+      background-size: cover;
+      background-position: center;
+      isolation: isolate;
+    }
+
+    .photo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(2, 7, 6, 0.15) 0%, rgba(3, 8, 7, 0.9) 90%),
+        linear-gradient(125deg, rgba(216, 63, 135, 0.15), rgba(42, 27, 61, 0.45));
+      z-index: 0;
+    }
+
+    .photo-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 15%, rgba(164, 179, 182, 0.25), transparent 32%),
+        repeating-radial-gradient(circle at 80% 80%, rgba(164, 179, 182, 0.22) 0 1px, transparent 1px 12px);
+      opacity: 0.28;
+      z-index: 0;
+    }
+
+    .photo-content {
+      position: absolute;
+      inset: auto 0 0 0;
+      z-index: 1;
+      padding: 1.1rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .photo-content h2 {
+      font-size: 1.5rem;
+      line-height: 1;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #dff876;
+      text-shadow: 0 0 8px rgba(223, 248, 118, 0.35);
+    }
+
+    .photo-content p {
+      color: #c7d2ce;
+      font-size: 0.92rem;
+    }
+
+    .card-lineups {
+      background-image: url("https://gamingbolt.com/wp-content/uploads/2020/07/Valorant_Brimstone.jpg");
+    }
+
+    .card-agents {
+      background-image: url("https://static.wikia.nocookie.net/valorant/images/3/3a/Closed_Beta_Promo.jpg/revision/latest/scale-to-width-down/1200?cb=20200409115659");
+    }
+
+    .card-crosshairs {
+      background-image: url("https://i.ytimg.com/vi/dyOaVMylgEQ/maxresdefault.jpg");
+    }
+
+    .photo-card:hover {
+      transform: translateY(-2px);
+      transition: transform 0.2s ease;
+    }
+
+    footer {
+      position: fixed;
+      right: 1.25rem;
+      bottom: 1rem;
+      color: var(--muted);
+      padding: 0;
+      font-size: 0.85rem;
+      text-align: right;
+      margin-top: 0;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 980px) {
+      .intro {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-card {
+        min-height: 280px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container"></nav>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <h1>VAL Code</h1>
+    </section>
+
+    <section class="cards">
+      <a class="photo-card card-lineups" href="/maps/maps.html">
+        <div class="photo-content">
+          <h2>Line Ups</h2>
+          <p>Map-based lineup collection and setups.</p>
+        </div>
+      </a>
+      <a class="photo-card card-agents" href="/agents/">
+        <div class="photo-content">
+          <h2>Agents</h2>
+          <p>Agent-specific utility guides and tips.</p>
+        </div>
+      </a>
+      <a class="photo-card card-crosshairs" href="/crosshairs/">
+        <div class="photo-content">
+          <h2>Crosshairs</h2>
+          <p>Crosshair gallery and import-ready presets.</p>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <footer>2026</footer>
+</body>
+</html>

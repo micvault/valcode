@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VAL Code • Maps</title>
+  <style>
+    :root {
+      --bg-deep: #2a1b3d;
+      --bg-mid: #44318d;
+      --accent: #d83f87;
+      --warm: #e98074;
+      --cool: #a4b3b6;
+      --text: #f7f4fb;
+      --muted: #d8d0e4;
+      --panel: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        linear-gradient(130deg, rgba(42, 27, 61, 0.98), rgba(68, 49, 141, 0.9)),
+        radial-gradient(circle at 75% 12%, rgba(216, 63, 135, 0.18), transparent 42%),
+        radial-gradient(circle at 15% 80%, rgba(233, 128, 116, 0.15), transparent 38%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: rgba(42, 27, 61, 0.5);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    main {
+      padding: 3rem 0 3rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .maps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .map-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1.2rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      text-align: center;
+      transition: 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .map-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
+      z-index: 0;
+    }
+
+    .map-card h2 {
+      position: relative;
+      z-index: 1;
+      font-size: 1.3rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .map-card:hover {
+      border-color: var(--accent);
+      filter: brightness(1.1);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      padding: 2rem 0 1.5rem;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 2rem 0;
+      }
+
+      .maps-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a href="/">← Back to Home</a>
+      <span>Maps</span>
+      <span></span>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="page-header">
+      <h1>Choose a Map</h1>
+      <p>Select a Valorant map to view its lineups and strategies.</p>
+    </section>
+
+    <section class="maps-grid" id="mapsContainer"></section>
+  </main>
+
+  <footer>
+    <div class="container">VAL Code</div>
+  </footer>
+
+  <script>
+    async function loadMaps() {
+      try {
+        const response = await fetch('../data/maps.json');
+        const data = await response.json();
+        const container = document.getElementById('mapsContainer');
+
+        // Sort maps: competitive pool first (true), then non-competitive (false)
+        const sortedMaps = data.maps.sort((a, b) => {
+          if (a.competitivePool === b.competitivePool) {
+            return a.name.localeCompare(b.name); // alphabetical if same pool status
+          }
+          return b.competitivePool - a.competitivePool; // true comes before false
+        });
+
+        sortedMaps.forEach(map => {
+          const mapLink = document.createElement('a');
+          mapLink.className = 'map-card';
+          mapLink.href = `/maps/${map.name.toLowerCase()}/`;
+          mapLink.style.backgroundImage = `url('${map.image}')`;
+          mapLink.innerHTML = `<h2>${map.name}</h2>`;
+          container.appendChild(mapLink);
+        });
+      } catch (error) {
+        console.error('Error loading maps:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadMaps);
+  </script>
+</body>
+</html>

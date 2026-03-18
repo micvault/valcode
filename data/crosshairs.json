@@ -1,0 +1,29 @@
+{
+  "crosshairs": [
+    {
+      "name": "Dot Minimal",
+      "tag": "Precision",
+      "code": "0;s;1;P;c;1;h;0;d;1;z;3;f;0;0t;1;0l;2;0v;2;0g;1;0o;0;0a;1"
+    },
+    {
+      "name": "Small Plus",
+      "tag": "Tracking",
+      "code": "0;s;1;P;c;5;h;0;f;0;0t;4;0l;3;0v;2;0g;1;0o;1;0a;1;1t;2;1l;0"
+    },
+    {
+      "name": "Classic Cyan",
+      "tag": "Visibility",
+      "code": "0;s;1;P;c;8;h;0;f;0;0t;1;0l;4;0v;2;0g;1;0o;1;0a;1;1b;0"
+    },
+    {
+      "name": "Pro Standard",
+      "tag": "Competitive",
+      "code": "0;s;1;P;c;1;h;0;f;0;0t;2;0l;2;0v;2;0g;1;0o;1;0a;1"
+    },
+    {
+      "name": "Big Reticle",
+      "tag": "Visibility",
+      "code": "0;s;1;P;c;5;h;0;f;0;0t;5;0l;5;0v;3;0g;1;0o;1;0a;1"
+    }
+  ]
+}

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VAL Code • Split Lineups • Brimstone</title>
+  <style>
+    :root {
+      --bg-deep: #2a1b3d;
+      --bg-mid: #44318d;
+      --accent: #d83f87;
+      --warm: #e98074;
+      --cool: #a4b3b6;
+      --text: #f7f4fb;
+      --muted: #d8d0e4;
+      --panel: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        linear-gradient(130deg, rgba(42, 27, 61, 0.98), rgba(68, 49, 141, 0.9)),
+        radial-gradient(circle at 75% 12%, rgba(216, 63, 135, 0.18), transparent 42%),
+        radial-gradient(circle at 15% 80%, rgba(233, 128, 116, 0.15), transparent 38%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1600px, 95%);
+      margin: 0 auto;
+    }
+
+    header {
+      background: rgba(42, 27, 61, 0.5);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      transition: 0.2s ease;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    main {
+      padding: 3rem 0 3rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      grid-column: 1 / -1;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .map-container {
+      position: relative;
+      background: #1a2847;
+      border: 1px solid var(--border);
+      aspect-ratio: 16 / 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    .map-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .map-hotspot {
+      position: absolute;
+      cursor: pointer;
+      background: rgba(216, 63, 135, 0.1);
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .map-hotspot:hover {
+      background: rgba(216, 63, 135, 0.25);
+      border-color: var(--accent);
+    }
+
+    .map-hotspot.selected {
+      background: rgba(223, 248, 118, 0.3);
+      border-color: #dff876;
+      box-shadow: inset 0 0 12px rgba(223, 248, 118, 0.4);
+    }
+
+    .map-hotspot.disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+
+    .map-hotspot.available {
+      background: rgba(216, 63, 135, 0.2);
+      border-color: var(--accent);
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .selection-info {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      display: none;
+    }
+
+    .selection-info.show {
+      display: block;
+    }
+
+    .selection-info h3 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .selection-info p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0.5rem 0;
+    }
+
+    .selection-info button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      transition: 0.2s ease;
+    }
+
+    .selection-info button:hover {
+      filter: brightness(1.1);
+    }
+
+    .reset-button {
+      padding: 0.6rem 1rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+      transition: 0.2s ease;
+    }
+
+    .reset-button:hover {
+      filter: brightness(1.1);
+    }
+
+    .reset-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .tutorial-carousel {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .carousel-image {
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      display: block;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .carousel-button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+    }
+
+    .carousel-button:hover {
+      filter: brightness(1.1);
+    }
+
+    .carousel-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .carousel-counter {
+      color: var(--muted);
+      font-size: 0.9rem;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .expand-button {
+      margin-top: 0.6rem;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      transition: 0.2s ease;
+    }
+
+    .expand-button:hover {
+      filter: brightness(1.1);
+    }
+
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+
+    .fullscreen-overlay.show {
+      display: flex;
+    }
+
+    .fullscreen-overlay img {
+      max-width: 95vw;
+      max-height: 92vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .fullscreen-controls {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+    }
+
+    .fullscreen-nav {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.45rem 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      min-width: 88px;
+    }
+
+    .fullscreen-nav:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .fullscreen-counter {
+      color: var(--text);
+      min-width: 48px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 0.4rem 0.8rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      padding: 2rem 0 1.5rem;
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .content-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 2rem 0;
+      }
+
+      .page-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .content-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a href="/maps/split/">← Back to Agents</a>
+      <span id="pageTitle">Split • Brimstone</span>
+      <span></span>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="page-header">
+      <h1>Split Lineups - Brimstone</h1>
+    </section>
+
+    <div class="content-wrapper">
+      <div class="left-panel">
+        <section class="map-container" id="mapContainer">
+          <img src="/images/maps/split_better.png" alt="Split Map" class="map-image" />
+          <!-- Hotspots will be rendered here by JavaScript -->
+          <div id="hotspotContainer"></div>
+        </section>
+        <button id="resetButton" class="reset-button" onclick="resetSelection()" disabled>Reset</button>
+      </div>
+
+      <div class="right-panel">
+        <div class="selection-info" id="selectionInfo">
+          <h3>Select a destination...</h3>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">VAL Code</div>
+  </footer>
+
+  <script>
+    let lineupData = null;
+    let hotspotData = null;
+    let selectedFirstArea = null;
+
+    // Load hotspot data
+    async function loadHotspotData() {
+      try {
+        const response = await fetch('/data/hotspots/split.json');
+        hotspotData = await response.json();
+        renderHotspots();
+        attachHotspotEventListeners();
+      } catch (error) {
+        console.error('Error loading hotspot data:', error);
+      }
+    }
+
+    // Render hotspots dynamically
+    function renderHotspots() {
+      if (!hotspotData) return;
+      const container = document.getElementById('hotspotContainer');
+      hotspotData.hotspots.forEach(hotspot => {
+        const div = document.createElement('div');
+        div.className = 'map-hotspot';
+        div.dataset.location = hotspot.id;
+        div.style.top = hotspot.top;
+        div.style.width = hotspot.width;
+        div.style.height = hotspot.height;
+        div.style.borderRadius = '4px';
+        
+        // Set left or right positioning
+        if (hotspot.left) {
+          div.style.left = hotspot.left;
+        } else if (hotspot.right) {
+          div.style.right = hotspot.right;
+        }
+        
+        container.appendChild(div);
+      });
+    }
+
+    // Load lineup data
+    async function loadLineupData() {
+      try {
+        const response = await fetch('/data/lineups/split/brimstone.json');
+        lineupData = await response.json();
+      } catch (error) {
+        console.error('Error loading lineup data:', error);
+      }
+    }
+
+    // Attach event listeners to hotspots
+    function attachHotspotEventListeners() {
+      document.querySelectorAll('.map-hotspot').forEach(hotspot => {
+        hotspot.addEventListener('click', handleHotspotClick);
+      });
+    }
+
+    // Define area connections from loaded data
+    function getAreaConnections() {
+      if (!lineupData) return {};
+      const connections = {};
+      for (const [areaKey, areaData] of Object.entries(lineupData.areas)) {
+        connections[areaKey] = areaData.connections;
+      }
+      return connections;
+    }
+
+    // Get lineup details by spike plant and position
+    function getLineupDetails(spikePlant, position) {
+      if (!lineupData) return null;
+      return lineupData.lineups.find(
+        l => l.spikePlant === spikePlant && l.position === position
+      );
+    }
+
+    // Get area name
+    function getAreaName(areaKey) {
+      if (!lineupData) return areaKey;
+      return lineupData.areas[areaKey]?.name || areaKey;
+    }
+
+    // Get area image
+    function getAreaImage(areaKey) {
+      if (!lineupData) return null;
+      return lineupData.areas[areaKey]?.image || null;
+    }
+
+    // Handle hotspot click
+    function handleHotspotClick(e) {
+      e.stopPropagation();
+      const location = this.dataset.location;
+
+      if (selectedFirstArea === null) {
+        // First selection - Spike plant location
+        selectedFirstArea = location;
+        this.classList.add('selected');
+        
+        // Show available destinations
+        const connections = getAreaConnections();
+        const availableDestinations = connections[location] || [];
+        
+        document.querySelectorAll('.map-hotspot').forEach(h => {
+          if (h === this) return;
+          if (availableDestinations.includes(h.dataset.location)) {
+            h.classList.add('available');
+          } else {
+            h.classList.add('disabled');
+          }
+        });
+
+        document.getElementById('selectionInfo').classList.add('show');
+        let html = `
+          <h3>Spike Plant: ${getAreaName(location)}</h3>
+          <p>Select your defensive position</p>
+        `;
+
+        // Add spike plant image if available
+        const spikePlantImage = getAreaImage(location);
+        if (spikePlantImage) {
+          html = `
+            <h3>Spike Plant: ${getAreaName(location)}</h3>
+            <img src="${spikePlantImage}" alt="Spike Plant ${getAreaName(location)}" class="carousel-image" style="margin: 0.75rem 0;" onerror="this.src='/images/placeholder.svg'" />
+            <button class="expand-button" onclick="expandImage('${spikePlantImage}')">Expand</button>
+            <p>Select your defensive position</p>
+          `;
+        }
+
+        document.getElementById('selectionInfo').innerHTML = html;
+        setResetButtonEnabled(true);
+      } else {
+        // Second selection - Defensive position
+        const secondArea = location;
+        const lineupDetails = getLineupDetails(selectedFirstArea, secondArea);
+        
+        document.getElementById('selectionInfo').classList.add('show');
+        let html = `
+          <h3>${getAreaName(selectedFirstArea)} → ${getAreaName(secondArea)}</h3>
+          <p style="font-size: 0.9rem; margin: 0.5rem 0;">Spike: ${getAreaName(selectedFirstArea)}</p>
+          <p style="font-size: 0.9rem; margin-bottom: 1rem;">Your Position: ${getAreaName(secondArea)}</p>
+        `;
+
+        if (lineupDetails) {
+          html += `
+            <p style="margin: 0.5rem 0; line-height: 1.6; color: var(--text);">${lineupDetails.description}</p>
+            <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted);">💡 ${lineupDetails.notes}</p>
+          `;
+
+          // Add tutorial carousel if available
+          if (lineupDetails.tutorial && lineupDetails.tutorial.images && lineupDetails.tutorial.images.length > 0) {
+            const images = lineupDetails.tutorial.images;
+            html += `
+              <div class="tutorial-carousel">
+                <h4 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.95rem;">Tutorial: ${lineupDetails.tutorial.title}</h4>
+                <img id="tutorialImage" src="${images[0]}" alt="Tutorial ${1}" class="carousel-image" onerror="this.src='/images/placeholder.svg'" />
+                <button class="expand-button" onclick="expandImage(window.currentTutorialImages?.[window.currentImageIndex] || '${images[0]}')">Expand</button>
+                <div class="carousel-controls">
+                  <button class="carousel-button" id="prevBtn" onclick="previousTutorialImage()">← Prev</button>
+                  <span class="carousel-counter"><span id="imageCounter">1</span>/<span>${images.length}</span></span>
+                  <button class="carousel-button" id="nextBtn" onclick="nextTutorialImage()">Next →</button>
+                </div>
+              </div>
+            `;
+            // Store tutorial images for carousel navigation
+            window.currentTutorialImages = images;
+            window.currentImageIndex = 0;
+          }
+        }
+
+        document.getElementById('selectionInfo').innerHTML = html;
+        setResetButtonEnabled(true);
+        updateCarouselButtons();
+
+        // Highlight selected areas
+        document.querySelectorAll('.map-hotspot').forEach(h => {
+          h.classList.remove('available', 'disabled');
+          if (h.dataset.location !== selectedFirstArea && h.dataset.location !== secondArea) {
+            h.style.opacity = '0.3';
+          }
+        });
+      }
+    }
+
+    function previousTutorialImage() {
+      if (!window.currentTutorialImages) return;
+      window.currentImageIndex = (window.currentImageIndex - 1 + window.currentTutorialImages.length) % window.currentTutorialImages.length;
+      updateTutorialImage();
+    }
+
+    function nextTutorialImage() {
+      if (!window.currentTutorialImages) return;
+      window.currentImageIndex = (window.currentImageIndex + 1) % window.currentTutorialImages.length;
+      updateTutorialImage();
+    }
+
+    function updateTutorialImage() {
+      if (!window.currentTutorialImages) return;
+      const img = document.getElementById('tutorialImage');
+      const counter = document.getElementById('imageCounter');
+      if (img) {
+        img.src = window.currentTutorialImages[window.currentImageIndex];
+        counter.textContent = window.currentImageIndex + 1;
+      }
+      if (document.querySelector('.fullscreen-overlay')?.classList.contains('show')) {
+        updateFullscreenImage();
+      }
+      updateCarouselButtons();
+    }
+
+    function updateCarouselButtons() {
+      if (!window.currentTutorialImages) return;
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (prevBtn) prevBtn.disabled = window.currentTutorialImages.length <= 1;
+      if (nextBtn) nextBtn.disabled = window.currentTutorialImages.length <= 1;
+    }
+
+    function setResetButtonEnabled(enabled) {
+      const resetButton = document.getElementById('resetButton');
+      if (!resetButton) return;
+      resetButton.disabled = !enabled;
+    }
+
+    function resetSelection() {
+      selectedFirstArea = null;
+      document.querySelectorAll('.map-hotspot').forEach(h => {
+        h.classList.remove('selected', 'available', 'disabled');
+        h.style.opacity = '1';
+      });
+      document.getElementById('selectionInfo').classList.remove('show');
+      setResetButtonEnabled(false);
+    }
+
+    // Allow clicking anywhere outside hotspots to reset
+    document.getElementById('mapContainer').addEventListener('click', function(e) {
+      if (e.target === this) {
+        resetSelection();
+      }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadHotspotData();
+      await loadLineupData();
+    });
+
+    // Fullscreen overlay setup
+    document.addEventListener('DOMContentLoaded', () => {
+      const fullscreenOverlay = document.createElement('div');
+      fullscreenOverlay.className = 'fullscreen-overlay';
+      fullscreenOverlay.innerHTML = `
+        <button class="fullscreen-close" onclick="closeFullscreen()">Close ✖</button>
+        <img id="fullscreenImage" src="" alt="Fullscreen Tutorial Image" />
+        <div class="fullscreen-controls">
+          <button class="fullscreen-nav" id="fullscreenPrevBtn" onclick="fullscreenPrevImage()">← Prev</button>
+          <span class="fullscreen-counter"><span id="fullscreenImageCounter">1</span>/<span id="fullscreenImageTotal">1</span></span>
+          <button class="fullscreen-nav" id="fullscreenNextBtn" onclick="fullscreenNextImage()">Next →</button>
+        </div>
+      `;
+      document.body.appendChild(fullscreenOverlay);
+
+      document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('carousel-image')) {
+          expandImage(event.target.src);
+        }
+      });
+
+      fullscreenOverlay.addEventListener('click', (event) => {
+        if (event.target === fullscreenOverlay) {
+          closeFullscreen();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeFullscreen();
+        } else if (event.key === 'ArrowLeft' && fullscreenOverlay.classList.contains('show')) {
+          fullscreenPrevImage();
+        } else if (event.key === 'ArrowRight' && fullscreenOverlay.classList.contains('show')) {
+          fullscreenNextImage();
+        }
+      });
+    });
+
+    function closeFullscreen() {
+      const fullscreenOverlay = document.querySelector('.fullscreen-overlay');
+      if (fullscreenOverlay) {
+        fullscreenOverlay.classList.remove('show');
+      }
+    }
+
+    // Add expand button for tutorial images
+    function expandImage(imageSrc) {
+      if (!imageSrc) return;
+      const fullscreenOverlay = document.querySelector('.fullscreen-overlay');
+
+      if (!window.currentTutorialImages || window.currentTutorialImages.length === 0) {
+        window.currentTutorialImages = [imageSrc];
+        window.currentImageIndex = 0;
+      } else {
+        const foundIndex = window.currentTutorialImages.indexOf(imageSrc);
+        if (foundIndex >= 0) {
+          window.currentImageIndex = foundIndex;
+        }
+      }
+
+      if (!fullscreenOverlay) return;
+      updateFullscreenImage();
+      fullscreenOverlay.classList.add('show');
+    }
+
+    function fullscreenPrevImage() {
+      if (!window.currentTutorialImages || window.currentTutorialImages.length <= 1) return;
+      window.currentImageIndex = (window.currentImageIndex - 1 + window.currentTutorialImages.length) % window.currentTutorialImages.length;
+      updateTutorialImage();
+    }
+
+    function fullscreenNextImage() {
+      if (!window.currentTutorialImages || window.currentTutorialImages.length <= 1) return;
+      window.currentImageIndex = (window.currentImageIndex + 1) % window.currentTutorialImages.length;
+      updateTutorialImage();
+    }
+
+    function updateFullscreenImage() {
+      if (!window.currentTutorialImages || window.currentTutorialImages.length === 0) return;
+
+      const fullscreenImage = document.getElementById('fullscreenImage');
+      const fullscreenCounter = document.getElementById('fullscreenImageCounter');
+      const fullscreenTotal = document.getElementById('fullscreenImageTotal');
+      const fullscreenPrevBtn = document.getElementById('fullscreenPrevBtn');
+      const fullscreenNextBtn = document.getElementById('fullscreenNextBtn');
+
+      if (!fullscreenImage || !fullscreenCounter || !fullscreenTotal || !fullscreenPrevBtn || !fullscreenNextBtn) return;
+
+      fullscreenImage.src = window.currentTutorialImages[window.currentImageIndex];
+      fullscreenCounter.textContent = String(window.currentImageIndex + 1);
+      fullscreenTotal.textContent = String(window.currentTutorialImages.length);
+
+      const singleImage = window.currentTutorialImages.length <= 1;
+      fullscreenPrevBtn.disabled = singleImage;
+      fullscreenNextBtn.disabled = singleImage;
+    }
+  </script>
+</body>
+</html>
