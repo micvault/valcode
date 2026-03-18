@@ -102,6 +102,8 @@
     .agent-thumbnail {
       width: 80px;
       height: 80px;
+      position: relative;
+      overflow: hidden;
       border: 2px solid var(--border);
       background: rgba(0, 0, 0, 0.3);
       cursor: pointer;
@@ -114,6 +116,32 @@
       color: var(--text);
       text-align: center;
       padding: 0.3rem;
+    }
+
+    .agent-thumbnail.with-image {
+      padding: 0;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .agent-thumbnail.with-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .agent-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.62rem;
+      line-height: 1.2;
+      padding: 0.2rem 0.25rem;
+      text-align: center;
     }
 
     .agent-thumbnail:hover {
@@ -217,6 +245,13 @@
     const mapName = 'Fracture'; // Change this for each map page
     let selectedAgent = null;
 
+    function resolveAgentImage(path) {
+      if (typeof path !== 'string' || path.trim() === '') return null;
+      if (path.startsWith('http://') || path.startsWith('https://')) return path;
+      if (path.startsWith('/')) return `../..${path}`;
+      return path;
+    }
+
     async function loadAgents() {
       try {
         const response = await fetch('../../data/agents.json');
@@ -227,8 +262,18 @@
         data.agents.forEach(agent => {
           const thumbnail = document.createElement('div');
           thumbnail.className = 'agent-thumbnail';
-          thumbnail.textContent = agent.name;
           thumbnail.dataset.agentName = agent.name.toLowerCase();
+
+          const imageSrc = resolveAgentImage(agent.image);
+          if (imageSrc) {
+            thumbnail.classList.add('with-image');
+            thumbnail.innerHTML = `
+              <img src="${imageSrc}" alt="${agent.name}" onerror="this.remove()" />
+              <span class="agent-name">${agent.name}</span>
+            `;
+          } else {
+            thumbnail.textContent = agent.name;
+          }
           
           // Apply yellow border if agent has lineup
           if (agent.withLineUp) {
