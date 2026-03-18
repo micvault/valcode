@@ -217,6 +217,33 @@
       cursor: not-allowed;
     }
 
+    .selection-meta {
+      display: none;
+      width: 100%;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .selection-meta.show {
+      display: grid;
+    }
+
+    .meta-pill {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .meta-pill strong {
+      color: var(--accent);
+      margin-right: 0.25rem;
+    }
+
     .tutorial-carousel {
       background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--border);
@@ -408,6 +435,7 @@
           <!-- Hotspots will be rendered here by JavaScript -->
           <div id="hotspotContainer"></div>
         </section>
+        <div id="selectionMeta" class="selection-meta"></div>
         <button id="resetButton" class="reset-button" onclick="resetSelection()" disabled>Reset</button>
       </div>
 
@@ -522,6 +550,23 @@
       return path;
     }
 
+    function updateSelectionMeta(spikeName, fromName) {
+      const selectionMeta = document.getElementById('selectionMeta');
+      if (!selectionMeta) return;
+
+      if (!spikeName && !fromName) {
+        selectionMeta.classList.remove('show');
+        selectionMeta.innerHTML = '';
+        return;
+      }
+
+      selectionMeta.classList.add('show');
+      selectionMeta.innerHTML = `
+        <span class="meta-pill"><strong>SPIKE:</strong> ${spikeName || '-'}</span>
+        <span class="meta-pill"><strong>FROM:</strong> ${fromName || '-'}</span>
+      `;
+    }
+
     // Handle hotspot click
     function handleHotspotClick(e) {
       e.stopPropagation();
@@ -563,6 +608,7 @@
         }
 
         document.getElementById('selectionInfo').innerHTML = html;
+        updateSelectionMeta(getAreaName(location), null);
         setResetButtonEnabled(true);
       } else {
         // Second selection - Defensive position
@@ -572,8 +618,6 @@
         document.getElementById('selectionInfo').classList.add('show');
         let html = `
           <h3>${getAreaName(selectedFirstArea)} → ${getAreaName(secondArea)}</h3>
-          <p style="font-size: 0.9rem; margin: 0.5rem 0;">Spike: ${getAreaName(selectedFirstArea)}</p>
-          <p style="font-size: 0.9rem; margin-bottom: 1rem;">Your Position: ${getAreaName(secondArea)}</p>
         `;
 
         if (lineupDetails) {
@@ -614,6 +658,7 @@
         }
 
         document.getElementById('selectionInfo').innerHTML = html;
+  updateSelectionMeta(getAreaName(selectedFirstArea), getAreaName(secondArea));
         setResetButtonEnabled(true);
         updateCarouselButtons();
 
@@ -674,6 +719,7 @@
         h.style.opacity = '1';
       });
       document.getElementById('selectionInfo').classList.remove('show');
+      updateSelectionMeta(null, null);
       setResetButtonEnabled(false);
     }
 
