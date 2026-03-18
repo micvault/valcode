@@ -254,8 +254,9 @@
 
     .carousel-image {
       width: 100%;
+      aspect-ratio: 16 / 10;
       height: auto;
-      max-height: 500px;
+      max-height: none;
       object-fit: contain;
       display: block;
       background: rgba(0, 0, 0, 0.2);
@@ -527,10 +528,16 @@
       );
     }
 
+    function getHotspotName(areaKey) {
+      if (!hotspotData || !hotspotData.hotspots) return null;
+      const hotspot = hotspotData.hotspots.find(h => h.id === areaKey);
+      return hotspot?.name || null;
+    }
+
     // Get area name
     function getAreaName(areaKey) {
-      if (!lineupData) return areaKey;
-      return lineupData.areas[areaKey]?.name || areaKey;
+      const areaName = lineupData?.areas?.[areaKey]?.name;
+      return areaName || getHotspotName(areaKey) || areaKey;
     }
 
     // Get area image
@@ -616,9 +623,7 @@
         const lineupDetails = getLineupDetails(selectedFirstArea, secondArea);
         
         document.getElementById('selectionInfo').classList.add('show');
-        let html = `
-          <h3>${getAreaName(selectedFirstArea)} → ${getAreaName(secondArea)}</h3>
-        `;
+        let html = '';
 
         if (lineupDetails) {
           if (hasDisplayValue(lineupDetails.description)) {
