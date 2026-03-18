@@ -217,6 +217,21 @@
       cursor: not-allowed;
     }
 
+    .selection-notice {
+      display: none;
+      width: 100%;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.35;
+    }
+
+    .selection-notice.show {
+      display: block;
+    }
+
     .selection-meta {
       display: none;
       width: 100%;
@@ -438,6 +453,7 @@
         </section>
         <div id="selectionMeta" class="selection-meta"></div>
         <button id="resetButton" class="reset-button" onclick="resetSelection()" disabled>Reset</button>
+        <div id="selectionNotice" class="selection-notice" aria-live="polite"></div>
       </div>
 
       <div class="right-panel">
@@ -456,6 +472,7 @@
     let lineupData = null;
     let hotspotData = null;
     let selectedFirstArea = null;
+    let noticeTimer = null;
 
     // Load hotspot data
     async function loadHotspotData() {
@@ -592,10 +609,32 @@
       `;
     }
 
+    function showSelectionNotice(message) {
+      const selectionNotice = document.getElementById('selectionNotice');
+      if (!selectionNotice) return;
+
+      if (noticeTimer) {
+        clearTimeout(noticeTimer);
+      }
+
+      selectionNotice.textContent = message;
+      selectionNotice.classList.add('show');
+
+      noticeTimer = setTimeout(() => {
+        selectionNotice.classList.remove('show');
+        selectionNotice.textContent = '';
+      }, 2200);
+    }
+
     // Handle hotspot click
     function handleHotspotClick(e) {
       e.stopPropagation();
       const location = this.dataset.location;
+
+      if (selectedFirstArea !== null && this.classList.contains('disabled')) {
+        showSelectionNotice('No lineup relationship for that hotspot from the selected spike plant.');
+        return;
+      }
 
       if (selectedFirstArea === null) {
         // First selection - Spike plant location
@@ -743,6 +782,15 @@
       });
       document.getElementById('selectionInfo').classList.remove('show');
       updateSelectionMeta(null, null);
+      const selectionNotice = document.getElementById('selectionNotice');
+      if (selectionNotice) {
+        selectionNotice.classList.remove('show');
+        selectionNotice.textContent = '';
+      }
+      if (noticeTimer) {
+        clearTimeout(noticeTimer);
+        noticeTimer = null;
+      }
       setResetButtonEnabled(false);
     }
 
