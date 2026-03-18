@@ -193,7 +193,7 @@
 <body>
   <header>
     <nav class="container">
-      <a href="/">← Back to Home</a>
+      <a href="../../index.html">← Back to Home</a>
       <span id="mapTitle">Fracture</span>
       <span></span>
     </nav>
@@ -252,7 +252,7 @@
         // Proceed button click handler
         proceedBtn.addEventListener('click', () => {
           if (selectedAgent) {
-            window.location.href = `/maps/${mapName.toLowerCase()}/${selectedAgent}/`;
+            window.location.href = `${selectedAgent}/`;
           }
         });
 

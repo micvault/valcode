@@ -390,7 +390,7 @@
 <body>
   <header>
     <nav class="container">
-      <a href="/maps/split/">← Back to Agents</a>
+      <a href="../index.html">← Back to Agents</a>
       <span id="pageTitle">Split • Brimstone</span>
       <span></span>
     </nav>
@@ -404,7 +404,7 @@
     <div class="content-wrapper">
       <div class="left-panel">
         <section class="map-container" id="mapContainer">
-          <img src="/images/maps/split_better.png" alt="Split Map" class="map-image" />
+          <img src="../../../images/maps/split_better.png" alt="Split Map" class="map-image" />
           <!-- Hotspots will be rendered here by JavaScript -->
           <div id="hotspotContainer"></div>
         </section>
@@ -431,7 +431,7 @@
     // Load hotspot data
     async function loadHotspotData() {
       try {
-        const response = await fetch('/data/hotspots/split.json');
+        const response = await fetch('../../../data/hotspots/split.json');
         hotspotData = await response.json();
         renderHotspots();
         attachHotspotEventListeners();
@@ -467,7 +467,7 @@
     // Load lineup data
     async function loadLineupData() {
       try {
-        const response = await fetch('/data/lineups/split/brimstone.json');
+        const response = await fetch('../../../data/lineups/split/brimstone.json');
         lineupData = await response.json();
       } catch (error) {
         console.error('Error loading lineup data:', error);
@@ -511,6 +511,17 @@
       return lineupData.areas[areaKey]?.image || null;
     }
 
+    function hasDisplayValue(value) {
+      return value !== false && value !== null && value !== undefined && value !== '';
+    }
+
+    function resolveAssetPath(path) {
+      if (typeof path !== 'string') return path;
+      if (path.startsWith('http://') || path.startsWith('https://')) return path;
+      if (path.startsWith('/')) return `../../..${path}`;
+      return path;
+    }
+
     // Handle hotspot click
     function handleHotspotClick(e) {
       e.stopPropagation();
@@ -541,11 +552,11 @@
         `;
 
         // Add spike plant image if available
-        const spikePlantImage = getAreaImage(location);
+        const spikePlantImage = resolveAssetPath(getAreaImage(location));
         if (spikePlantImage) {
           html = `
             <h3>Spike Plant: ${getAreaName(location)}</h3>
-            <img src="${spikePlantImage}" alt="Spike Plant ${getAreaName(location)}" class="carousel-image" style="margin: 0.75rem 0;" onerror="this.src='/images/placeholder.svg'" />
+            <img src="${spikePlantImage}" alt="Spike Plant ${getAreaName(location)}" class="carousel-image" style="margin: 0.75rem 0;" onerror="this.src='../../../images/placeholder.svg'" />
             <button class="expand-button" onclick="expandImage('${spikePlantImage}')">Expand</button>
             <p>Select your defensive position</p>
           `;
@@ -566,18 +577,28 @@
         `;
 
         if (lineupDetails) {
-          html += `
-            <p style="margin: 0.5rem 0; line-height: 1.6; color: var(--text);">${lineupDetails.description}</p>
-            <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted);">💡 ${lineupDetails.notes}</p>
-          `;
+          if (hasDisplayValue(lineupDetails.description)) {
+            html += `
+              <p style="margin: 0.5rem 0; line-height: 1.6; color: var(--text);">${lineupDetails.description}</p>
+            `;
+          }
+
+          if (hasDisplayValue(lineupDetails.notes)) {
+            html += `
+              <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--muted);">💡 ${lineupDetails.notes}</p>
+            `;
+          }
 
           // Add tutorial carousel if available
           if (lineupDetails.tutorial && lineupDetails.tutorial.images && lineupDetails.tutorial.images.length > 0) {
-            const images = lineupDetails.tutorial.images;
+            const images = lineupDetails.tutorial.images.map(resolveAssetPath);
+            const tutorialTitle = hasDisplayValue(lineupDetails.tutorial.title)
+              ? `<h4 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.95rem;">Tutorial: ${lineupDetails.tutorial.title}</h4>`
+              : '';
             html += `
               <div class="tutorial-carousel">
-                <h4 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.95rem;">Tutorial: ${lineupDetails.tutorial.title}</h4>
-                <img id="tutorialImage" src="${images[0]}" alt="Tutorial ${1}" class="carousel-image" onerror="this.src='/images/placeholder.svg'" />
+                ${tutorialTitle}
+                <img id="tutorialImage" src="${images[0]}" alt="Tutorial ${1}" class="carousel-image" onerror="this.src='../../../images/placeholder.svg'" />
                 <button class="expand-button" onclick="expandImage(window.currentTutorialImages?.[window.currentImageIndex] || '${images[0]}')">Expand</button>
                 <div class="carousel-controls">
                   <button class="carousel-button" id="prevBtn" onclick="previousTutorialImage()">← Prev</button>

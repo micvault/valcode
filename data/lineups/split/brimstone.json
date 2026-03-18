@@ -12,8 +12,8 @@
     {
       "spikePlant": "b-opendefault",
       "position": "b-lobby",
-      "description": "description.",
-      "notes": "notes.",
+      "description": false,
+      "notes": false,
       "heatValue": 0.9,
       "tutorial": {
         "title": "B Open Default Setup",

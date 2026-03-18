@@ -159,7 +159,7 @@
 <body>
   <header>
     <nav class="container">
-      <a href="/">← Back to Home</a>
+      <a href="../index.html">← Back to Home</a>
       <span>Maps</span>
       <span></span>
     </nav>
@@ -196,7 +196,7 @@
         sortedMaps.forEach(map => {
           const mapLink = document.createElement('a');
           mapLink.className = 'map-card';
-          mapLink.href = `/maps/${map.name.toLowerCase()}/`;
+          mapLink.href = `${map.name.toLowerCase()}/`;
           mapLink.style.backgroundImage = `url('${map.image}')`;
           mapLink.innerHTML = `<h2>${map.name}</h2>`;
           container.appendChild(mapLink);
