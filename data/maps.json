@@ -2,52 +2,52 @@
   "maps": [
     {
       "name": "Abyss",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/6/61/Loading_Screen_Abyss.png/revision/latest/scale-to-width-down/150?cb=20240730145619"
     },
     {
       "name": "Ascent",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/e/e7/Loading_Screen_Ascent.png/revision/latest/scale-to-width-down/150?cb=20200607180020"
     },
     {
       "name": "Bind",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/2/23/Loading_Screen_Bind.png/revision/latest/scale-to-width-down/150?cb=20200620202316"
     },
     {
       "name": "Breeze",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/1/10/Loading_Screen_Breeze.png/revision/latest/scale-to-width-down/150?cb=20260106175937"
     },
     {
       "name": "Corrode",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/6/6f/Loading_Screen_Corrode.png/revision/latest/scale-to-width-down/150?cb=20250624201813"
     },
     {
       "name": "Fracture",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/f/fc/Loading_Screen_Fracture.png/revision/latest/scale-to-width-down/150?cb=20210908143656"
     },
     {
       "name": "Haven",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/7/70/Loading_Screen_Haven.png/revision/latest/scale-to-width-down/150?cb=20200620202335"
     },
     {
       "name": "Icebox",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/1/13/Loading_Screen_Icebox.png/revision/latest/scale-to-width-down/150?cb=20250730171440"
     },
     {
       "name": "Lotus",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/1/13/Loading_Screen_Icebox.png/revision/latest/scale-to-width-down/150?cb=20250730171440"
     },
     {
       "name": "Pearl",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/a/af/Loading_Screen_Pearl.png/revision/latest/scale-to-width-down/150?cb=20220622132842"
     },
     {
@@ -57,7 +57,7 @@
     },
     {
       "name": "Sunset",
-      "competitivePool": true,
+      "competitivePool": false,
       "image": "https://static.wikia.nocookie.net/valorant/images/5/5c/Loading_Screen_Sunset.png/revision/latest/scale-to-width-down/150?cb=20230829125442"
     }
   ]
